@@ -6,7 +6,7 @@ export const conversationsData: Record<string, any> = {
       {
         self: false,
         content: 'Hey there!',
-        sentAt: Date.now(),
+        sentAt: 1719584800000,
       }
     ],
   },
