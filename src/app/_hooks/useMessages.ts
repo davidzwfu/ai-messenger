@@ -1,78 +1,61 @@
-import { useAtom } from 'jotai'
-import { conversationsAtom } from '@/app/_libs/atoms'
-import { usersData } from '@/app/_data/users'
+import { useAtom, useSetAtom } from 'jotai'
+import { conversationsAtom, incomingMessagesAtom } from '@/app/_libs/atoms'
 
 export function useMessages(id: number) {
   const [conversations, setConversations] = useAtom(conversationsAtom)
   const { messages, isTyping } = conversations[id]
-
-  function receiveMessage(newMessage: any) {
-    updateConversation({ isTyping: true })
-
-    const typingSeconds = newMessage.content.length / 30
-    console.log(typingSeconds)
-    setTimeout(() => {
-      updateConversation({
-        isTyping: false,
-        messages: newMessage,
-      })
-    }, typingSeconds * 1000)
-  }
+  const setIncomingMessages = useSetAtom(incomingMessagesAtom)
 
   async function sendMessage(message: string, userId: number) {
-    const newMessage = {
-      self: true,
-      content: message,
-      sentAt: Date.now(),
-    }
-    updateConversation({ messages: newMessage })
+    const newMessages = [
+      ...messages,
+      {
+        self: true,
+        content: message,
+        sentAt: Date.now(),
+      }
+    ]
+    setConversations(prev => {
+      const newState = { ...prev }
+      newState[id].messages = newMessages
+      return newState
+    })
+
     const res = await fetch('/api', {
       method: 'POST',
       body: JSON.stringify({
         userId,
-        conversation: [
-          ...messages,
-          newMessage,
-        ],
+        conversation: newMessages,
       })
     })
     const data = await res.json()
-    console.log(data)
-    receiveMessage({
-      self: false,
-      content: data.message.content,
-      sentAt: Date.now(),
+    setIncomingMessages(prev => {
+      const newState = [...prev]
+      newState.push({
+        userId,
+        content: data.message.content
+      })
+      return newState
     })
   }
 
   function markAsRead() {
-    updateConversation({ unreadCount: 0 })
-  }
-
-  function updateConversation(params: any) {
     setConversations(prev => {
-      const newConversation = {...prev[id]}
-      for (const key in params) {
-        if (Array.isArray(newConversation[key]))
-          newConversation[key] = [...newConversation[key], params[key]]
-        else
-          newConversation[key] = params[key]
-      }
-      return {
-        ...prev,
-        [id]: newConversation
-      }
+      const newState = { ...prev }
+      newState[id].unreadCount = 0
+      return newState
     })
   }
 
   function clearMessages() {
-    setConversations({
-      ...conversations,
-      [id]: {
+    setConversations(prev => {
+      const newState = { ...prev }
+      newState[id] = {
         unreadCount: 0,
         isTyping: false,
         messages: [],
       }
+      return newState
     })
   }
 

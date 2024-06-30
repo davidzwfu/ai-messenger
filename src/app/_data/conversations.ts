@@ -18,13 +18,7 @@ export const conversationsData: Record<string, any> = {
   4: {
     unreadCount: 0,
     isTyping: false,
-    messages: [
-      {
-        self: false,
-        content: 'Hey Liv — just wanted to say thanks for chasing up the release for me. Really appreciate it.',
-        sentAt: 1719588800000,
-      }
-    ],
+    messages: [],
   },
   5: {
     unreadCount: 0,
