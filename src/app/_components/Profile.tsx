@@ -36,7 +36,7 @@ export default function Profile({
       <div className="profile__banner" style={{ background: user.color }}></div>
       <div className="profile__header">
         <div className="profile__profile">
-          <Image loader={ImageLoader.avatars} src={user.image} width={160} height={160} alt={user.image} />
+          <Image loader={ImageLoader.avatars} src={user.image} width={160} height={160} quality={100} priority={true} alt={user.image} />
         </div>
       </div>
       <div className="profile__body">
@@ -57,7 +57,7 @@ export default function Profile({
         <div className="profile__block">
           <h4 className="profile__subheading">Location</h4>
           <div className="profile__location">
-            <Image loader={ImageLoader.flags} src={user.flag} width={20} height={20} quality={100} alt={user.flag} />
+            <Image loader={ImageLoader.flags} src={user.flag} width={20} height={20} alt={user.flag} />
             {user.location}
           </div>
         </div>
