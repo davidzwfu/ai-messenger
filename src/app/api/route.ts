@@ -16,10 +16,11 @@ export async function POST(request: NextRequest) {
   const completion = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     temperature: 1,
-    max_tokens: 1000,
+    max_tokens: 300,
+    response_format: { type: 'json_object' },
     messages: [
       { role: 'system', content: prompt },
-      ...messages,
+      ...messages.slice(-20),
     ],
   })
   console.log(completion)

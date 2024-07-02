@@ -2,34 +2,47 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
 import { ImageLoader } from '@/app/_libs/ImageLoader'
 import { usersData } from '@/app/_data/users'
 import { useMessages } from '@/app/_hooks/useMessages'
 import { formatDate, isSameDay } from '@/app/_libs/utils'
+import { showProfileAtom } from '@/app/_libs/atoms'
 import Message from '@/app/_components/Message'
 import Typing from '@/app/_components/Typing'
+import Profile from './Profile'
+import { useRouter } from 'next/navigation'
+import DeleteChat from '../_modals/DeleteChat'
+import Modal from 'react-modal'
+
+Modal.setAppElement('#root')
 
 export default function Chatroom({
   id
 }: {
-  id: number
+  id: string
 }) {
+  const router = useRouter()
   const user = usersData[id]
-  const { 
+  const {
+    isTyping,
     messages,
     sendMessage,
-    clearMessages,
     markAsRead,
-    isTyping,
+    clearMessages,
+    deleteConversation,
   } = useMessages(id)
   const [messageInput, setMessageInput] = useState('')
+  const [showProfile, setShowProfile] = useAtom(showProfileAtom)
+  const [deleteId, setDeleteId] = useState<string|null>(null)
 
   useEffect(() => {
     markAsRead()
   }, [messages])
 
-  function reset() {
-    clearMessages()
+  function deleteChat() {
+    deleteConversation()
+    router.push('/messages')
   }
 
   function handleKeyDown(event: React.KeyboardEvent) {
@@ -49,11 +62,13 @@ export default function Chatroom({
     setMessageInput('')
   }
 
-  return (
+  return <>
+    <DeleteChat deleteId={deleteId} setDeleteId={setDeleteId} action={deleteChat} />
+
     <div className="chatroom">
       <div className="chatroom-header">
         <div className="chatroom-header__profile">
-          <Image loader={ImageLoader.avatars} src={user.image} width={56} height={56} alt={user.image} />
+          <Image loader={ImageLoader.avatars} src={user.image} width={56} height={56} priority={true} alt={user.image} />
           <div className="chatroom-header__status"></div>
         </div>
         <div className="chatroom-header__block">
@@ -64,8 +79,11 @@ export default function Chatroom({
           <span className="chatroom-header__subtitle">{user.username}</span>
         </div>
         <div className="chatroom-header__actions">
-          <button className="btn" onClick={() => reset()}>Reset</button>
-          <button className="btn btn--primary">View profile</button>
+          <button className="btn" onClick={() => clearMessages()}>Reset</button>
+          <button className="btn" onClick={() => setDeleteId(id)}>Delete chat</button>
+          <button className="btn btn--primary" onClick={() => setShowProfile(!showProfile)}>
+            {showProfile ? 'Hide' : 'View'} profile
+          </button>
         </div>
       </div>
       <div className="chatroom-body">
@@ -97,5 +115,9 @@ export default function Chatroom({
         </form>
       </div>
     </div>
-  )
+
+    {showProfile &&
+      <Profile user={user} />
+    }
+  </>
 }

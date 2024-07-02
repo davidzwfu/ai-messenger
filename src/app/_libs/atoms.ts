@@ -1,6 +1,10 @@
 import { atom } from 'jotai'
-import { atomFamily, atomWithStorage } from 'jotai/utils'
-import { conversationsData } from '@/app/_data/conversations'
+import { atomWithStorage } from 'jotai/utils'
 
-export const conversationsAtom = atom<Record<string, any>>(conversationsData)
+export const conversationsAtom = atomWithStorage<Record<string, any>>('conversations', {})
+
 export const incomingMessagesAtom = atom<any[]>([])
+
+export const showProfileAtom = atom<boolean>(false)
+
+export const deleteChatAtom = atom<string|null>(null)

@@ -23,6 +23,9 @@ export default function Message({
         <div className="message__bubble">
           <p className="message__text">{message.content}</p>
         </div>
+        {message.reaction && 
+          <div className="message__reaction">{message.reaction}</div>
+        }
       </div>
     </div>
   )

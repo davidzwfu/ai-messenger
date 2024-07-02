@@ -1,12 +1,12 @@
 import { useAtom, useSetAtom } from 'jotai'
 import { conversationsAtom, incomingMessagesAtom } from '@/app/_libs/atoms'
 
-export function useMessages(id: number) {
+export function useMessages(id: string) {
   const [conversations, setConversations] = useAtom(conversationsAtom)
-  const { messages, isTyping } = conversations[id]
+  const { isTyping, messages } = conversations[id]
   const setIncomingMessages = useSetAtom(incomingMessagesAtom)
 
-  async function sendMessage(message: string, userId: number) {
+  async function sendMessage(message: string, userId: string) {
     const newMessages = [
       ...messages,
       {
@@ -15,6 +15,7 @@ export function useMessages(id: number) {
         sentAt: Date.now(),
       }
     ]
+    const messageIndex = messages.length
     setConversations(prev => {
       const newState = { ...prev }
       newState[id].messages = newMessages
@@ -29,11 +30,19 @@ export function useMessages(id: number) {
       })
     })
     const data = await res.json()
+    const { text, reaction } = JSON.parse(data.message.content)
+    if (reaction) {
+      setConversations(prev => {
+        const newState = { ...prev }
+        newState[id].messages[messageIndex].reaction = reaction
+        return newState
+      })
+    }
     setIncomingMessages(prev => {
       const newState = [...prev]
       newState.push({
         userId,
-        content: data.message.content
+        content: text,
       })
       return newState
     })
@@ -59,11 +68,20 @@ export function useMessages(id: number) {
     })
   }
 
+  function deleteConversation() {
+    setConversations(prev => {
+      const newState = { ...prev }
+      delete newState[id]
+      return newState
+    })
+  }
+
   return {
+    isTyping,
     messages,
     sendMessage,
-    clearMessages,
     markAsRead,
-    isTyping,
+    clearMessages,
+    deleteConversation,
   }
 }

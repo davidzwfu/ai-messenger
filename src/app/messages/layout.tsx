@@ -1,3 +1,5 @@
+'use client'
+
 import Sidebar from '@/app/_components/Sidebar'
 
 export default function Layout({
@@ -5,6 +7,7 @@ export default function Layout({
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <div className="container">
       <Sidebar />

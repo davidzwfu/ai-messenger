@@ -17,9 +17,8 @@ export default function Sidebar() {
   const processingMessage = useRef<boolean>(false)
 
   useEffect(() => {
-    if (incomingMessages.length > 0 && !processingMessage.current) {
+    if (incomingMessages.length > 0 && !processingMessage.current)
       processMessage(incomingMessages.at(0))
-    }
   }, [incomingMessages])
 
   function processMessage(message: any) {
@@ -35,6 +34,8 @@ export default function Sidebar() {
     setTimeout(() => {
       setConversations(prev => {
         const newState = { ...prev }
+        if (!pathname.endsWith(userId))
+          newState[userId].unreadCount++
         newState[userId].isTyping = false
         newState[userId].messages.push({
           self: false,
@@ -43,15 +44,25 @@ export default function Sidebar() {
         })
         return newState
       })
-      setIncomingMessages(prev => prev.slice(1))
       processingMessage.current = false
+      setIncomingMessages(prev => prev.slice(1))
     }, typingSeconds * 1000)
   }
+
+  const totalUnread = Object.values(conversations).reduce((t, c) => t + c.unreadCount, 0)
 
   return (
     <div className="sidebar">
       <div className="sidebar-header">
-        <h2 className="sidebar-header__title">Messages</h2>
+        <h2 className="sidebar-header__title">AI Messenger</h2>
+        {totalUnread > 0 &&
+          <span className="sidebar-header__unread">{totalUnread}</span>
+        }
+        <Link href="/new" className="btn btn--icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 15.5H7.5C6.10444 15.5 5.40665 15.5 4.83886 15.6722C3.56045 16.06 2.56004 17.0605 2.17224 18.3389C2 18.9067 2 19.6044 2 21M19 21V15M16 18H22M14.5 7.5C14.5 9.98528 12.4853 12 10 12C7.51472 12 5.5 9.98528 5.5 7.5C5.5 5.01472 7.51472 3 10 3C12.4853 3 14.5 5.01472 14.5 7.5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </Link>
       </div>
       <div className="sidebar-body">
         {Object.entries(conversations).map(([id, conversation]) => {
