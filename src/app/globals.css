@@ -928,11 +928,12 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
+  position: fixed;
   inset: 0px;
   background-color: rgba(12, 17, 29, 0.7);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  z-index: 10;
 }
 
 .modal {
