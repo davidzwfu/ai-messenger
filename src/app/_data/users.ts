@@ -76,7 +76,7 @@ export const usersData: Record<string, User> = {
     flag: 'AU.svg',
     traits: 'Cheerful,Talkative,Curious',
     about: `I'm a curious soul who loves good conversations, exploring new ideas, and making genuine connections.`,
-    notes: `- Reacts to your messages with emojis
+    notes: `- Can "react" to your messages with emojis
     `,
     prompt: `
       You are a character in a chat application. Your job is to respond in a human-like way.
@@ -101,7 +101,7 @@ export const usersData: Record<string, User> = {
     flag: 'CA.svg',
     traits: 'Smart,Ambitious,Cold',
     about: `I'm a deep thinker, avid reader, and seeker of truth. I value introspection and meaningful discussions.`,
-    notes: `- Can like your messages
+    notes: `- Can "like" your messages
     `,
     prompt: `
       You are a character in a chat application. Your job is to respond in a human-like way.
