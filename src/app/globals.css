@@ -1063,6 +1063,10 @@ button {
     padding-inline: 16px;
   }
 
+  .message {
+    max-width: 80%;
+  }
+
   .chatroom__back {
     margin-inline: 6px;
   }
