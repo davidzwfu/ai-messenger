@@ -18,6 +18,7 @@ export default function Layout({
   const processingMessage = useRef<boolean>(false)
 
   useLayoutEffect(() => {
+    setWindowWidth(window.innerWidth)
     window.addEventListener('resize', () => setWindowWidth(window.innerWidth))
   }, [])
 
