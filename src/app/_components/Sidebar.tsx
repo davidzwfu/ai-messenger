@@ -1,54 +1,17 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { ImageLoader } from '@/app/_libs/ImageLoader'
 import { usersData } from '@/app/_data/users'
-import { conversationsAtom, incomingMessagesAtom } from '@/app/_libs/atoms'
+import { conversationsAtom } from '@/app/_libs/atoms'
 import { fromNow } from '@/app/_libs/utils'
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const [conversations, setConversations] = useAtom(conversationsAtom)
-  const [incomingMessages, setIncomingMessages] = useAtom(incomingMessagesAtom)
-  const processingMessage = useRef<boolean>(false)
-
-  useEffect(() => {
-    if (incomingMessages.length > 0 && !processingMessage.current)
-      processMessage(incomingMessages.at(0))
-  }, [incomingMessages])
-
-  function processMessage(message: any) {
-    processingMessage.current = true
-    const { userId, content } = message
-    setConversations(prev => {
-      const newState = { ...prev }
-      newState[userId].isTyping = true
-      return newState
-    })
-
-    const typingSeconds = content.length / 30
-    setTimeout(() => {
-      setConversations(prev => {
-        const newState = { ...prev }
-        if (!pathname.endsWith(userId))
-          newState[userId].unreadCount++
-        newState[userId].isTyping = false
-        newState[userId].messages.push({
-          self: false,
-          content,
-          sentAt: Date.now(),
-        })
-        return newState
-      })
-      processingMessage.current = false
-      setIncomingMessages(prev => prev.slice(1))
-    }, typingSeconds * 1000)
-  }
-
+  const conversations = useAtomValue(conversationsAtom)
   const totalUnread = Object.values(conversations).reduce((t, c) => t + c.unreadCount, 0)
 
   return (
