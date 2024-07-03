@@ -7,7 +7,7 @@ export default function Page() {
       {Object.values(usersData).map(user => {
         return (
           <div className="card" key={user.id}>
-            <Profile user={user} showButton={true} />
+            <Profile user={user} showAction={true} />
           </div>
         )
       })}

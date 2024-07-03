@@ -1,20 +1,21 @@
 'use client'
 
 import Image from 'next/image'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { ImageLoader } from '@/app/_libs/ImageLoader'
 import { User } from '@/app/_data/users'
-import { conversationsAtom } from '@/app/_libs/atoms'
+import { conversationsAtom, showProfileAtom } from '@/app/_libs/atoms'
 import { useRouter } from 'next/navigation'
 
 export default function Profile({
-  user, showButton = false
+  user, showAction = false
 }: {
   user: User
-  showButton?: boolean
+  showAction?: boolean
 }) {
   const router = useRouter()
   const [conversations, setConversations] = useAtom(conversationsAtom)
+  const setShowProfile = useSetAtom(showProfileAtom)
 
   function start() {
     if (!conversations.hasOwnProperty(user.id)) {
@@ -33,6 +34,13 @@ export default function Profile({
 
   return (
     <div className="profile">
+      {!showAction &&
+        <button className="btn btn--close" onClick={() => setShowProfile(false)}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+      }
       <div className="profile__banner" style={{ background: user.color }}></div>
       <div className="profile__header">
         <div className="profile__profile">
@@ -70,7 +78,7 @@ export default function Profile({
           <p className="profile__text">{user.notes}</p>
         </div>
       </div>
-      {showButton &&
+      {showAction &&
         <div className="profile__footer">
           <button className="btn btn--primary" onClick={() => start()}>Start chatting</button>
         </div>

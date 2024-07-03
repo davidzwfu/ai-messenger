@@ -1,6 +1,8 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+export const windowWidthAtom = atom<number>(0)
+
 export const conversationsAtom = atomWithStorage<Record<string, any>>('conversations', {})
 
 export const incomingMessagesAtom = atom<any[]>([])

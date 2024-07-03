@@ -1,10 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { useAtomValue } from 'jotai'
-import Chatroom from '@/app/_components/Chatroom'
-import { conversationsAtom } from '@/app/_libs/atoms'
 import Link from 'next/link'
+import { useAtomValue } from 'jotai'
+import { conversationsAtom, windowWidthAtom } from '@/app/_libs/atoms'
+import Chatroom from '@/app/_components/Chatroom'
 
 export default function Page({
   params
@@ -12,8 +12,10 @@ export default function Page({
   params: { id: string }
 }) {
   const conversations = useAtomValue(conversationsAtom)
+  const windowWidth = useAtomValue(windowWidthAtom)
 
   if (!params.id || !conversations.hasOwnProperty(params.id)) {
+    if (windowWidth <= 1024) return null
     return (
       <div className="empty">
         <div className="empty__icon">
