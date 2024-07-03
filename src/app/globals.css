@@ -929,7 +929,7 @@ button {
   align-items: center;
   justify-content: center;
   position: fixed;
-  inset: -40px 0;
+  inset: -100px 0;
   background-color: rgba(12, 17, 29, 0.7);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
