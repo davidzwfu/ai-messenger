@@ -12,7 +12,7 @@ https://ai-messenger-delta.vercel.app
 
 
 
-## Setup locally
+### Setup locally
 
 ```bash
 npm install
